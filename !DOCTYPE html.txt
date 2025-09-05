@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>سایت پیش‌نمایش ویدیوهای ویروسی</title>
+ <style>
+ /* استایل‌ها اینجا قرار می‌گیرند */
+ :root {
+ --primary-color: #ff0066;
+ --secondary-color: #ff6600;
+ --background-dark: #0f0f0f;
+ --card-background: #1a1a1a;
+ --text-light: #ffffff;
+ }
+
+ body {
+ background: var(--background-dark);
+ color: var(--text-light);
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ text-align: center;
+ margin: 0;
+ padding: 20px;
+ transition: all 0.3s;
+ }
+
+ .language-selector {
+ position: fixed;
+ top: 20px;
+ left: 20px;
+ z-index: 1000;
+ }
+
+ .language-btn {
+ background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+ color: white;
+ border: none;
+ padding: 10px 20px;
+ border-radius: 25px;
+ cursor: pointer;
+ font-weight: bold;
+ margin: 5px;
+ }
+
+ .video-card {
+ background: var(--card-background);
+ margin: 20px;
+ padding: 15px;
+ border-radius: 15px;
+ display: inline-block;
+ width: 320px;
+ cursor: pointer;
+ transition: transform 0.3s, box-shadow 0.3s;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .video-card:hover {
+ transform: scale(1.05);
+ box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+ }
+
+ .video-thumbnail {
+ width: 100%;
+ border-radius: 10px;
+ transition: opacity 0.3s;
+ }
+
+ .video-card:hover .video-thumbnail {
+ opacity: 0.3;
+ }
+
+ .video-preview {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ opacity: 0;
+ transition: opacity 0.3s;
+ border-radius: 10px;
+ }
+
+ .video-card:hover .video-preview {
+ opacity: 1;
+ }
+
+ .prediction-btn {
+ background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+ color: white;
+ border: none;
+ padding: 8px 15px;
+ border-radius: 20px;
+ cursor: pointer;
+ margin-top: 10px;
+ font-weight: bold;
+ }
+
+ /* RTL/LTR Support */
+ [dir="rtl"] {
+ text-align: right;
+ }
+
+ [dir="ltr"] {
+ text-align: left;
+ }
+ </style>
+</head>
+<body>
+ <div class="language-selector">
+ <button class="language-btn" onclick="changeLanguage('fa')">فارسی</button>
+ <button class="language-btn" onclick="changeLanguage('en')">English</button>
+ <button class="language-btn" onclick="changeLanguage('ar')">العربية</button>
+ <button class="language-btn" onclick="changeLanguage('es')">Español</button>
+ </div>
+
+ <h1 id="main-title"> پیش‌نمایش انقلابی ویدیوها</h1>
+ <p id="subtitle">موس خود را روی کارت ببرید و تیزر را ببینید!</p>
+
+ <div class="video-card" 
+ onmouseover="playPreview('preview1')" 
+ onmouseout="stopPreview('preview1')"
+ onclick="openVideo('https://youtu.be/VIDEO_ID_1')">
+ 
+ <img src="THUMBNAIL_1.jpg" class="video-thumbnail" alt="ویدیو 1">
+ <video class="video-preview" id="preview1" loop muted>
+ <source src="TEASER_1.mp4" type="video/mp4">
+ </video>
+ 
+ <h3 id="video-title-1">عنوان ویدیو ۱</h3>
+ <p id="video-desc-1">توضیح کوتاه و کنجکاوکننده...</p>
+ 
+ <button class="prediction-btn" onclick="event.stopPropagation(); predictViews('video1')">
+ <span id="predict-btn">پیش‌بینی بازدید</span> 
+ </button>
+ </div>
+
+ <script>
+ // دیکشنری چندزبانه
+ const translations = {
+ fa: {
+ title: " پیش‌نمایش انقلابی ویدیوها",
+ subtitle: "موس خود را روی کارت ببرید و تیزر را ببینید!",
+ videoTitle: "عنوان ویدیو ۱",
+ videoDesc: "توضیح کوتاه و کنجکاوکننده...",
+ predictBtn: "پیش‌بینی بازدید",
+ predictMsg: "پیش‌بینی بازدید برای ویدیو"
+ },
+ en: {
+ title: " Revolutionary Video Previews",
+ subtitle: "Hover over cards to watch teasers!",
+ videoTitle: "Video Title 1",
+ videoDesc: "Short and intriguing description...",
+ predictBtn: "Predict Views",
+ predictMsg: "View prediction for video"
+ },
+ ar: {
+ title: " معاينات فيديو ثورية",
+ subtitle: "مرر فوق البطاقات لمشاهدة المقتطفات!",
+ videoTitle: "عنوان الفيديو ۱",
+ videoDesc: "وصف قصير ومثير...",
+ predictBtn: "توقع المشاهدات",
+ predictMsg: "توقع المشاهدات للفيديو"
+ },
+ es: {
+ title: " Avances Revolucionarios de Video",
+ subtitle: "¡Coloca el cursor sobre las tarjetas para ver avances!",
+ videoTitle: "Título del Video 1",
+ videoDesc: "Descripción corta e intrigante...",
+ predictBtn: "Predecir Visitas",
+ predictMsg: "Predicción de visitas para video"
+ }
+ };
+
+ // تغییر زبان
+ function changeLanguage(lang) {
+ document.documentElement.lang = lang;
+ document.documentElement.dir = ['fa', 'ar'].includes(lang) ? 'rtl' : 'ltr';
+ 
+ document.getElementById('main-title').innerText = translations[lang].title;
+ document.getElementById('subtitle').innerText = translations[lang].subtitle;
+ document.getElementById('video-title-1').innerText = translations[lang].videoTitle;
+ document.getElementById('video-desc-1').innerText = translations[lang].videoDesc;
+ document.getElementById('predict-btn').innerText = translations[lang].predictBtn;
+ }
+
+ // توابع مربوط به ویدیو
+ function playPreview(id) {
+ document.getElementById(id).play();
+ }
+
+ function stopPreview(id) {
+ document.getElementById(id).pause();
+ document.getElementById(id).currentTime = 0;
+ }
+
+ function openVideo(url) {
+ window.open(url, '_blank');
+ }
+
+ function predictViews(videoId) {
+ const lang = document.documentElement.lang;
+ alert(`${translations[lang].predictMsg} ${videoId} - Coming soon!`);
+ }
+
+ // تنظیم زبان پیش‌فرض
+ changeLanguage('fa');
+ </script>
+</body>
+</html>
